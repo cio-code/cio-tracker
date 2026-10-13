@@ -17,19 +17,20 @@ let docs = [];   // documents currently shown in the table
 // ---- Filters ----
 let searchTimer;
 $('fQ').oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(loadDocs, 400); };
+$('fType').onchange = loadDocs;
 $('fCampus').onchange = loadDocs;
 $('fStatus').onchange = loadDocs;
 
 // ---- Table ----
 async function loadDocs() {
   try {
-    docs = await api('list', { q: $('fQ').value.trim(), campus: $('fCampus').value, status: $('fStatus').value });
+    docs = await api('list', { q: $('fQ').value.trim(), docType: $('fType').value, campus: $('fCampus').value, status: $('fStatus').value });
     $('docEmpty').classList.toggle('hidden', docs.length > 0);
     $('docRows').innerHTML = docs.map((d, i) => `
       <tr class="border-t border-[#e1e7e3] hover:bg-pine-soft/50 cursor-pointer" data-i="${i}" tabindex="0">
-        <td class="p-3 font-semibold tabnum whitespace-nowrap">${esc(d['Tracking No'])}</td>
-        <td class="p-3">${esc(d['Campus'])} · ${esc(d['Program'])}</td>
-        <td class="p-3">${esc(d['Faculty Name'] || 'Whole department')}<div class="text-xs text-[#4b5b54]">${esc(d['Source'])}</div></td>
+        <td class="p-3 font-semibold tabnum whitespace-nowrap">${esc(d['Tracking No'])}<div class="text-xs font-normal text-[#4b5b54]">${esc(d['Doc Type'])}</div></td>
+        <td class="p-3">${esc(d['Campus'])} · ${esc(d['Program'] || d['Department'])}</td>
+        <td class="p-3">${esc(d['Faculty Name'] || (d['Doc Type'] === 'DLP' ? '–' : 'Whole department'))}<div class="text-xs text-[#4b5b54]">${esc(d['Source'])}</div></td>
         <td class="p-3 whitespace-nowrap tabnum">${esc(d['Date Received'])}${d.Overdue ? '<div class="text-xs font-semibold text-amber2">Overdue</div>' : ''}</td>
         <td class="p-3">${chip(d['Status'])}</td>
         <td class="p-3">${esc(d['Current Holder'])}</td>
@@ -51,10 +52,13 @@ async function openDoc(tracking) {
   $('dNo').textContent = tracking;
   $('dStatus').innerHTML = chip(d['Status']);
 
+  const dlp = d['Doc Type'] === 'DLP';
   const rows = [
+    ['Type', d['Doc Type']],
     ['Campus', d['Campus']], ['Department', d['Department']],
     ['Program', d['Program'] + (d['Major'] ? ' – ' + d['Major'] : '')],
-    ['Faculty', d['Faculty Name'] || 'Whole department'],
+    [dlp ? 'Teacher' : 'Faculty', d['Faculty Name'] || 'Whole department'],
+    ...(dlp && d['Description'] ? [['Subject', String(d['Description']).replace(/^Subject: /, '')]] : []),
     ['Term', `${d['Semester']}, SY ${d['School Year']}`],
     ['Submitted by', d['Source']],
     ['Received', `${d['Date Received']} by ${d['Received By']}`],
