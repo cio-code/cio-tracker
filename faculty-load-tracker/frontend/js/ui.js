@@ -38,7 +38,8 @@ function requireLogin() { if (!getSession()) location.replace('index.html'); }
 // Draws the header + navigation into <div id="shell"></div>. `active` is the current page key.
 const NAV = [
   ['dashboard', 'dashboard.html', 'Dashboard'],
-  ['receive', 'receive.html', 'Receive a document'],
+  ['receive-fl', 'receive-faculty-load.html', 'Receive Faculty Load'],
+  ['receive-dlp', 'receive-dlp.html', 'Receive DLP'],
   ['documents', 'documents.html', 'Documents']
 ];
 function renderShell(active) {
