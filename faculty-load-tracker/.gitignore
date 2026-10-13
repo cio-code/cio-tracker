@@ -1,0 +1,6 @@
+# Backend holds the Google Sheet ID - keep it private (only in Apps Script / your computer)
+backend/
+
+# Computer junk
+.DS_Store
+Thumbs.db
