@@ -10,6 +10,7 @@ function fillDepartments() {
   $('rDept').innerHTML = options(depts, 'Choose department');
   fillPrograms();
 }
+
 function fillPrograms() {
   const c = $('rCampus').value, d = $('rDept').value;
   const progs = uniq(boot.programs.filter(p => p.Campus === c && p.Department === d).map(p => p.Program));
@@ -18,10 +19,14 @@ function fillPrograms() {
     : options([], 'Choose department first');
   fillMajors();
 }
+
 function fillMajors() {
   const c = $('rCampus').value, d = $('rDept').value, p = $('rProgram').value;
-  const majors = uniq(boot.programs.filter(x => x.Campus === c && x.Department === d && x.Program === p && x.Major).map(x => x.Major));
+  const majors = uniq(boot.programs
+    .filter(x => x.Campus === c && x.Department === d && x.Program === p && x.Major)
+    .map(x => x.Major));
   const sel = $('rMajor');
+  if (!sel) return;
   if (!p || p === boot.whole) {
     sel.innerHTML = '<option value="">Not applicable</option>';
     sel.disabled = true;
@@ -31,9 +36,8 @@ function fillMajors() {
   } else {
     sel.innerHTML = options(majors, 'Choose major');
     sel.disabled = false;
-    sel.required = true;   // a program that has majors must have one chosen
   }
-  if (sel.disabled) sel.required = false;
+  sel.required = !sel.disabled;
 }
 
 function defaultSchoolYear() {
@@ -88,5 +92,6 @@ $('receiveForm').addEventListener('submit', async e => {
 $('anotherBtn').onclick = () => {
   $('slipWrap').classList.add('hidden');
   $('receiveForm').classList.remove('hidden');
-  ['rMajor', 'rFaculty', 'rSource', 'rRemarks'].forEach(id => $(id).value = '');
+  ['rFaculty', 'rSource', 'rRemarks'].forEach(id => $(id).value = '');
+  fillMajors();
 };
