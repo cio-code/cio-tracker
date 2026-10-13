@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard · Faculty Load Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans">
+
+<div id="shell"></div>
+
+<main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+  <h1 id="pageTitle" class="text-xl font-bold"></h1>
+
+  <div class="bg-white border border-[#c9d3cd] rounded-lg grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-[#e1e7e3]">
+    <div class="p-4"><div class="text-sm text-[#4b5b54]">Received today</div><div id="stReceived" class="text-3xl font-bold tabnum">–</div></div>
+    <div class="p-4"><div class="text-sm text-[#4b5b54]">Still in the office</div><div id="stPending" class="text-3xl font-bold tabnum">–</div></div>
+    <div class="p-4"><div class="text-sm text-[#4b5b54]">Released today</div><div id="stReleased" class="text-3xl font-bold tabnum">–</div></div>
+    <div class="p-4"><div class="text-sm text-[#4b5b54]">Overdue</div><div id="stOverdue" class="text-3xl font-bold tabnum text-amber2">–</div></div>
+  </div>
+
+  <div class="bg-white border border-[#c9d3cd] rounded-lg overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead class="bg-pine-soft text-left">
+        <tr><th class="p-3">Campus</th><th class="p-3 text-right">Still in the office</th><th class="p-3 text-right">Overdue</th></tr>
+      </thead>
+      <tbody id="campusRows"></tbody>
+    </table>
+  </div>
+</main>
+
+<div id="toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 bg-ink text-white text-sm px-4 py-2 rounded-md z-50"></div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>
