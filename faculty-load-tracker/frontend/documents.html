@@ -16,8 +16,11 @@
 <div id="shell"></div>
 
 <main class="max-w-6xl mx-auto px-4 py-6 space-y-4">
-  <div class="grid sm:grid-cols-4 gap-3">
+  <div class="grid sm:grid-cols-5 gap-3">
     <input id="fQ" class="sm:col-span-2" placeholder="Search number, program, faculty, submitter" aria-label="Search">
+    <select id="fType" aria-label="Document type">
+      <option value="">All types</option><option>Faculty Load</option><option>DLP</option>
+    </select>
     <select id="fCampus" aria-label="Campus"></select>
     <select id="fStatus" aria-label="Status">
       <option value="Pending">Still in the office</option>
