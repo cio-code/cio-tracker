@@ -20,9 +20,5 @@ async function api(action, payload = {}) {
 
 // Programs, flow rules and office list. Cached for the browser tab so each page opens faster.
 async function loadBoot() {
-  const cached = sessionStorage.getItem('boot');
-  if (cached) return JSON.parse(cached);
-  const b = await api('bootstrap');
-  sessionStorage.setItem('boot', JSON.stringify(b));
-  return b;
+  return await api('bootstrap');
 }
