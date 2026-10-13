@@ -21,7 +21,19 @@ function fillPrograms() {
 function fillMajors() {
   const c = $('rCampus').value, d = $('rDept').value, p = $('rProgram').value;
   const majors = uniq(boot.programs.filter(x => x.Campus === c && x.Department === d && x.Program === p && x.Major).map(x => x.Major));
-  $('majorList').innerHTML = majors.map(m => `<option value="${esc(m)}">`).join('');
+  const sel = $('rMajor');
+  if (!p || p === boot.whole) {
+    sel.innerHTML = '<option value="">Not applicable</option>';
+    sel.disabled = true;
+  } else if (majors.length === 0) {
+    sel.innerHTML = '<option value="">No major for this program</option>';
+    sel.disabled = true;
+  } else {
+    sel.innerHTML = options(majors, 'Choose major');
+    sel.disabled = false;
+    sel.required = true;   // a program that has majors must have one chosen
+  }
+  if (sel.disabled) sel.required = false;
 }
 
 function defaultSchoolYear() {
