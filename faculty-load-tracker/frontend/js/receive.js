@@ -1,5 +1,9 @@
 requireLogin();
-renderShell('receive');
+
+// Each receive page sets window.PAGE_TYPE to 'Faculty Load' or 'DLP'.
+const TYPE = window.PAGE_TYPE;
+const isDLP = TYPE === 'DLP';
+renderShell(isDLP ? 'receive-dlp' : 'receive-fl');
 
 let boot = null;
 
@@ -10,6 +14,7 @@ function fillDepartments() {
   $('rDept').innerHTML = options(depts, 'Choose department');
   fillPrograms();
 }
+
 function fillPrograms() {
   const c = $('rCampus').value, d = $('rDept').value;
   const progs = uniq(boot.programs.filter(p => p.Campus === c && p.Department === d).map(p => p.Program));
@@ -18,16 +23,34 @@ function fillPrograms() {
     : options([], 'Choose department first');
   fillMajors();
 }
+
+// Only the Faculty Load page has a Major dropdown.
 function fillMajors() {
+  const sel = $('rMajor');
+  if (!sel) return;
   const c = $('rCampus').value, d = $('rDept').value, p = $('rProgram').value;
-  const majors = uniq(boot.programs.filter(x => x.Campus === c && x.Department === d && x.Program === p && x.Major).map(x => x.Major));
-  $('majorList').innerHTML = majors.map(m => `<option value="${esc(m)}">`).join('');
+  const majors = uniq(boot.programs
+    .filter(x => x.Campus === c && x.Department === d && x.Program === p && x.Major)
+    .map(x => x.Major));
+  if (!p || p === boot.whole) {
+    sel.innerHTML = '<option value="">Not applicable</option>';
+    sel.disabled = true;
+  } else if (majors.length === 0) {
+    sel.innerHTML = '<option value="">No major for this program</option>';
+    sel.disabled = true;
+  } else {
+    sel.innerHTML = options(majors, 'Choose major');
+    sel.disabled = false;
+  }
+  sel.required = !sel.disabled;
 }
 
 function defaultSchoolYear() {
   const d = new Date(), y = d.getMonth() >= 5 ? d.getFullYear() : d.getFullYear() - 1;
   return `${y}-${y + 1}`;
 }
+
+const val = id => ($(id) ? $(id).value.trim() : '');
 
 // ---- Start ----
 (async function init() {
@@ -51,21 +74,26 @@ $('receiveForm').addEventListener('submit', async e => {
   busy($('rBtn'), true, 'Saving…');
   try {
     const data = {
+      docType: TYPE,
       campus: $('rCampus').value, department: $('rDept').value, program: $('rProgram').value,
-      major: $('rMajor').value.trim(), facultyName: $('rFaculty').value.trim(), semester: $('rSem').value,
-      schoolYear: $('rSY').value.trim(), source: $('rSource').value.trim(), remarks: $('rRemarks').value.trim()
+      major: val('rMajor'), facultyName: val('rFaculty'),
+      subject: val('rSubject'), period: val('rPeriod'),
+      semester: $('rSem').value, schoolYear: val('rSY'),
+      source: val('rSource'), remarks: val('rRemarks')
     };
     const out = await api('receive', data);
 
+    $('slipTitle').textContent = `${TYPE} received. Write this number on the document.`;
     $('slipNo').textContent = out.tracking;
-    $('slipInfo').innerHTML = [
+    const lines = [
       `${data.campus} Campus · ${data.department}`,
       data.program + (data.major ? ' – ' + data.major : ''),
-      `${data.semester}, SY ${data.schoolYear}`,
-      data.facultyName ? 'Faculty: ' + data.facultyName : 'Whole-department batch',
-      'Submitted by: ' + data.source,
-      'Received: ' + out.receivedAt + ' by ' + getSession().user.name
-    ].map(t => `<div>${esc(t)}</div>`).join('');
+      isDLP ? `Teacher: ${data.facultyName}` : (data.facultyName ? 'Faculty: ' + data.facultyName : 'Whole-department batch')
+    ];
+    if (isDLP) lines.push('Subject: ' + data.subject + (data.period ? ' (' + data.period + ')' : ''));
+    lines.push(`${data.semester}, SY ${data.schoolYear}`, 'Submitted by: ' + data.source,
+               'Received: ' + out.receivedAt + ' by ' + getSession().user.name);
+    $('slipInfo').innerHTML = lines.map(t => `<div>${esc(t)}</div>`).join('');
 
     $('receiveForm').classList.add('hidden');
     $('slipWrap').classList.remove('hidden');
@@ -76,5 +104,6 @@ $('receiveForm').addEventListener('submit', async e => {
 $('anotherBtn').onclick = () => {
   $('slipWrap').classList.add('hidden');
   $('receiveForm').classList.remove('hidden');
-  ['rMajor', 'rFaculty', 'rSource', 'rRemarks'].forEach(id => $(id).value = '');
+  ['rFaculty', 'rSubject', 'rPeriod', 'rSource', 'rRemarks'].forEach(id => { if ($(id)) $(id).value = ''; });
+  fillMajors();
 };
