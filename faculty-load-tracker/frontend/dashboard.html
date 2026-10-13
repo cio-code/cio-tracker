@@ -16,6 +16,15 @@
 <div id="shell"></div>
 
 <main class="max-w-6xl mx-auto px-4 py-6 space-y-6">
+  <div class="max-w-xs">
+    <label for="stType">Show</label>
+    <select id="stType">
+      <option value="">All documents</option>
+      <option>Faculty Load</option>
+      <option>DLP</option>
+    </select>
+  </div>
+
   <div class="bg-white border border-[#c9d3cd] rounded-lg grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-[#e1e7e3]">
     <div class="p-4"><div class="text-sm text-[#4b5b54]">Received today</div><div id="stReceived" class="text-3xl font-bold tabnum">–</div></div>
     <div class="p-4"><div class="text-sm text-[#4b5b54]">Still in the office</div><div id="stPending" class="text-3xl font-bold tabnum">–</div></div>
