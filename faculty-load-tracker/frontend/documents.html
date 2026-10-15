@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submissions · Document Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans">
+
+<div id="shell"></div>
+
+<main class="max-w-6xl mx-auto px-4 py-6 space-y-4">
+  <h1 class="text-xl font-bold">Submissions</h1>
+
+  <div class="grid sm:grid-cols-4 gap-3">
+    <input id="fQ" class="sm:col-span-2" placeholder="Search number, department, faculty name, submitter" aria-label="Search">
+    <select id="fCampus" aria-label="Campus"></select>
+    <select id="fStatus" aria-label="Status">
+      <option value="Pending">Still in the office</option>
+      <option value="">All statuses</option>
+      <option>Received</option><option>Processing</option><option>For Signature</option>
+      <option>Returned</option><option>Released</option>
+    </select>
+    <select id="fMissing" class="sm:col-span-2" aria-label="Missing documents">
+      <option value="">Any completeness</option>
+      <option value="Any">Incomplete (something missing)</option>
+      <option value="Faculty Load">Missing Faculty Load</option>
+      <option value="IDP">Missing IDP</option>
+      <option value="Complete">Complete only</option>
+    </select>
+  </div>
+
+  <div class="bg-white border border-[#c9d3cd] rounded-lg overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead class="bg-pine-soft text-left">
+        <tr><th class="p-3">Number</th><th class="p-3">Campus / Department</th><th class="p-3">Submitted by</th>
+            <th class="p-3">Received</th><th class="p-3">Faculty Load / IDP</th><th class="p-3">Status</th><th class="p-3">With</th></tr>
+      </thead>
+      <tbody id="docRows"></tbody>
+    </table>
+  </div>
+  <p id="docEmpty" class="text-sm text-[#4b5b54] hidden">No submissions match. Change the filters or receive a new submission.</p>
+</main>
+
+<!-- Detail panel -->
+<div id="drawer" class="hidden fixed inset-0 z-40 noprint">
+  <div class="absolute inset-0 bg-black/40" id="drawerBg"></div>
+  <aside class="absolute right-0 top-0 h-full w-full max-w-2xl bg-white p-5 overflow-y-auto space-y-5">
+    <div class="flex items-start justify-between gap-3">
+      <div><div id="dNo" class="text-xl font-bold tabnum"></div><div id="dStatus"></div></div>
+      <button id="dClose" class="btn-ghost">Close</button>
+    </div>
+    <dl id="dInfo" class="text-sm grid grid-cols-3 gap-y-1.5"></dl>
+
+    <div><h3 class="font-semibold mb-1">Attachments received</h3><ul id="dAtt" class="text-sm list-disc pl-5"></ul></div>
+
+    <div>
+      <h3 class="font-semibold mb-1">Faculty <span id="dProgress" class="font-normal text-sm text-[#4b5b54]"></span></h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="text-left"><tr><th class="pb-1 pr-2">Name</th><th class="pb-1 pr-2">Faculty Load</th><th class="pb-1">IDP</th></tr></thead>
+          <tbody id="dLines"></tbody>
+        </table>
+      </div>
+      <form id="addForm" class="grid sm:grid-cols-4 gap-2 mt-3">
+        <input id="addName" placeholder="Add a faculty member" aria-label="Faculty name" class="sm:col-span-1">
+        <select id="addProgram" aria-label="Program"></select>
+        <select id="addMajor" aria-label="Major"></select>
+        <button class="btn-ghost">Add</button>
+      </form>
+    </div>
+
+    <div>
+      <h3 class="font-semibold mb-2">History</h3>
+      <ol id="dTimeline" class="text-sm border-l-2 border-pine-soft pl-4 space-y-3"></ol>
+    </div>
+
+    <div id="dActions" class="space-y-5"></div>
+    <p id="dError" class="text-sm text-red-700 hidden"></p>
+  </aside>
+</div>
+
+<div id="toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 bg-ink text-white text-sm px-4 py-2 rounded-md z-50"></div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/documents.js"></script>
+</body>
+</html>

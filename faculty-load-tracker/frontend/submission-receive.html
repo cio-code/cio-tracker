@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Receive a submission · Document Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="js/tailwind-config.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="font-sans">
+
+<div id="shell"></div>
+
+<main class="max-w-6xl mx-auto px-4 py-6">
+  <h1 class="text-xl font-bold mb-4">Receive a submission</h1>
+
+  <form id="receiveForm" class="space-y-5 max-w-4xl">
+
+    <section class="bg-white border border-[#c9d3cd] rounded-lg p-5 grid md:grid-cols-2 gap-4">
+      <div><label for="rCampus">Campus</label><select id="rCampus" required></select></div>
+      <div><label for="rDept">Department</label><select id="rDept" required></select></div>
+      <div><label for="rSem">Semester</label>
+        <select id="rSem"><option>1st Semester</option><option>2nd Semester</option><option>Summer</option></select></div>
+      <div><label for="rSY">School year</label><input id="rSY" placeholder="2026-2027" required></div>
+      <div class="md:col-span-2"><label for="rSource">Submitted by</label>
+        <input id="rSource" placeholder="Name of the dean, department head or staff who handed it in" required></div>
+    </section>
+
+    <section class="bg-white border border-[#c9d3cd] rounded-lg p-5">
+      <h2 class="font-semibold mb-2">Attachments received</h2>
+      <div id="attList" class="grid gap-2 text-sm"></div>
+    </section>
+
+    <section class="bg-white border border-[#c9d3cd] rounded-lg p-5">
+      <h2 class="font-semibold mb-1">Faculty submissions</h2>
+      <p class="text-sm text-[#4b5b54] mb-3">Choose the Program / Major on the first name. The names below copy it.
+        To give some names another one, change it on the first of those names and the rest below follow.</p>
+
+      <label for="pasteNames">Faculty names, one per line</label>
+      <textarea id="pasteNames" rows="4" placeholder="Vicpher D. Garnada&#10;Zenon A. Matos Jr.&#10;Niñobel G. Canencia"></textarea>
+      <div class="mt-2"><button type="button" class="btn-ghost" id="addNamesBtn">Add names to the list</button></div>
+      <p id="gError" class="text-sm text-red-700 hidden mt-2"></p>
+
+      <div class="overflow-x-auto mt-4">
+        <table class="w-full text-sm">
+          <thead class="text-left">
+            <tr>
+              <th class="pb-2 pr-2">Faculty name</th>
+              <th class="pb-2 pr-2">Program / Major</th>
+              <th class="pb-2 px-2 text-center">Faculty Load<br><button type="button" id="allFL" class="font-normal underline text-xs">tick all</button></th>
+              <th class="pb-2 px-2 text-center">IDP<br><button type="button" id="allIDP" class="font-normal underline text-xs">tick all</button></th>
+              <th class="pb-2"></th>
+            </tr>
+          </thead>
+          <tbody id="lineRows"></tbody>
+        </table>
+      </div>
+      <p id="lineCount" class="text-sm text-[#4b5b54] mt-2"></p>
+    </section>
+
+    <section class="bg-white border border-[#c9d3cd] rounded-lg p-5">
+      <label for="rRemarks">Remarks</label><textarea id="rRemarks" rows="2"></textarea>
+    </section>
+
+    <p id="rError" class="text-sm text-red-700 hidden"></p>
+    <button class="btn" id="rBtn">Save as received</button>
+  </form>
+
+  <!-- Receipt shown after saving -->
+  <div id="slipWrap" class="hidden max-w-3xl">
+    <div id="slip" class="bg-white border-2 border-pine rounded-lg p-6">
+      <div class="text-sm text-[#4b5b54]">Received. Write this number on the transmittal.</div>
+      <div id="slipNo" class="text-3xl md:text-4xl font-bold tabnum my-2"></div>
+      <div id="slipInfo" class="text-sm space-y-0.5"></div>
+      <table class="w-full text-sm border border-[#c9d3cd] mt-4">
+        <thead><tr class="text-left"><th class="border border-[#c9d3cd] p-2">Faculty name</th><th class="border border-[#c9d3cd] p-2">Program / Major</th>
+          <th class="border border-[#c9d3cd] p-2 text-center">Faculty Load</th><th class="border border-[#c9d3cd] p-2 text-center">IDP</th></tr></thead>
+        <tbody id="slipLines"></tbody>
+      </table>
+    </div>
+    <div class="flex gap-2 mt-3 noprint">
+      <button class="btn" onclick="window.print()">Print receipt</button>
+      <button class="btn-ghost" id="anotherBtn">Receive another</button>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 bg-ink text-white text-sm px-4 py-2 rounded-md z-50"></div>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/sub-nav.js"></script>
+<script src="js/submission-receive.js"></script>
+</body>
+</html>
