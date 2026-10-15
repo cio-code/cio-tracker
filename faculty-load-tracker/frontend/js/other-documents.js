@@ -25,6 +25,13 @@ async function loadDocs() {
   try {
     docs = await api('docList', { q: $('fQ').value.trim(), docType: $('fType').value, campus: $('fCampus').value, status: $('fStatus').value });
     $('docEmpty').classList.toggle('hidden', docs.length > 0);
+    // The default filter hides Released items. Say so, with a one-click way to see them.
+    const hint = $('docHint'), pending = $('fStatus').value === 'Pending';
+    hint.classList.toggle('hidden', !pending);
+    if (pending) {
+      hint.innerHTML = 'Showing only documents still in the office. Released ones are hidden. <button type="button" id="showAll" class="underline">Show all statuses</button>';
+      $('showAll').onclick = () => { $('fStatus').value = ''; loadDocs(); };
+    }
     $('docRows').innerHTML = docs.map((d, i) => `
       <tr class="border-t border-[#e1e7e3] hover:bg-black/5 cursor-pointer" data-i="${i}" tabindex="0">
         <td class="p-3 font-semibold tabnum whitespace-nowrap">${esc(d['Tracking No'])}<div class="text-xs font-normal text-[#4b5b54]">${esc(d['Doc Type'])}</div></td>
