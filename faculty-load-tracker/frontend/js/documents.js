@@ -35,6 +35,13 @@ async function loadSubs() {
 }
 
 function renderTable() {
+  // The default filter hides Released items. Say so, with a one-click way to see them.
+  const hint = $('docHint'), pending = $('fStatus').value === 'Pending';
+  hint.classList.toggle('hidden', !pending);
+  if (pending) {
+    hint.innerHTML = 'Showing only submissions still in the office. Released ones are hidden. <button type="button" id="showAll" class="underline">Show all statuses</button>';
+    $('showAll').onclick = () => { $('fStatus').value = ''; loadSubs(); };
+  }
   $('docEmpty').classList.toggle('hidden', subs.length > 0);
   $('docRows').innerHTML = subs.map((s, i) => `
     <tr class="border-t border-[#e1e7e3] hover:bg-black/5 cursor-pointer" data-i="${i}" tabindex="0">
